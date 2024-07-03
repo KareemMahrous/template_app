@@ -1,0 +1,8 @@
+arb-dir: lib/core/generated/l10n
+output-dir: lib/core/generated/l10n/langs
+template-arb-file: en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLang
+synthetic-package: false
+preferred-supported-locales: [en, ar]
+use-escaping: false

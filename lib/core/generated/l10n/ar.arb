@@ -1,0 +1,10 @@
+{
+    "@@locale": "ar",
+    "somethingWentWrongMsg": "عذراً، حدث خطأ ما!",
+    "subscribe": "اشترك",
+    "login": "تسجيل الدخول",
+    "register": "تسجيل",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "city": "المدينة"
+}

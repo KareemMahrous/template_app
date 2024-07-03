@@ -1,0 +1,10 @@
+{
+    "@@locale": "en",
+    "somethingWentWrongMsg": "Sorry, something went wrong!",
+    "subscribe": "Subscribe",
+    "login": "Login",
+    "register": "Register",
+    "name": "Name",
+    "email": "Email",
+    "city": "City"
+}
