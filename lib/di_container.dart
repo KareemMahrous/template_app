@@ -60,10 +60,10 @@ void _registerFactories() {
 Future<void> _registerSingletons() async {
   final SharedPreferences sharedPreferences =
       await SharedPreferences.getInstance();
-  
+
   // Configuration options for Dio.
   BaseOptions options = BaseOptions(
-    baseUrl: Endpoints.baseUrl,
+    baseUrl: EndPoints.baseUrl,
     followRedirects: false,
     headers: {
       'Content-Type': 'application/json',
@@ -73,19 +73,19 @@ Future<void> _registerSingletons() async {
   );
 
   // Registering singletons.
-  
+
   // Register SharedPreferences.
   getIt.registerSingleton<SharedPreferences>(sharedPreferences);
-  
-  // Register GraphQLConfig.
-  getIt.registerSingleton<GraphQLConfig>(GraphQLConfig(httpLink: getIt()));
-  
+
+  // Register HttpLink.
+  getIt.registerSingleton<Link>(customGraphLink);
+
+  // Register GraphQlConfig.
+  getIt.registerSingleton<GraphQlConfig>(GraphQlConfig(link: getIt()));
+
   // Register GraphService.
   getIt.registerSingleton<GraphService>(GraphService(graphQLConfig: getIt()));
-  
-  // Register HttpLink.
-  getIt.registerSingleton<HttpLink>(HttpLink(Endpoints.baseUrl));
-  
+
   // Register Dio with custom configurations and interceptors.
   getIt.registerSingleton<BaseDio>(
     DioClient(

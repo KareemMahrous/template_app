@@ -1,2 +1,2 @@
-export 'endpoints.dart';
+export 'end_points.dart';
 export 'validations.dart';

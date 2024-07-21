@@ -9,19 +9,36 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  #State management
   bloc: ^8.1.4
   flutter_bloc: ^8.1.6
-  equatable: ^2.0.5
+
+  #Network
   dio: ^5.4.3+1
-  get_it: ^7.7.0
-  shared_preferences: ^2.2.3
-  go_router: ^14.2.0
-  dartz: ^0.10.1
-  flutter_localizations:
-    sdk: flutter
-  intl: ^0.19.0
   graphql_flutter: ^5.1.2
 
+  #Dependency injection
+  get_it: ^7.7.0
+
+  #Local storage
+  shared_preferences: ^2.2.3
+
+  #Routing
+  go_router: ^14.2.0
+  
+  #Localization
+  flutter_localizations:
+    sdk: flutter
+  
+  #UI
+  intl: ^0.19.0
+
+  #Utils
+  dartz: ^0.10.1
+  equatable: ^2.0.5
+  http: ^0.13.6
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
