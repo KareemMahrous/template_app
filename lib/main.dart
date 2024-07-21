@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:template/app/routing/routing.dart';
+import 'package:template/core/constants/app_config.dart';
 
 import 'bloc_observer.dart';
+import 'core/core.dart';
 import 'di_container.dart';
 
- void main() async {
+void main() async {
   /// Ensures that the Flutter framework is properly initialized
   /// before executing any other code. This is necessary when
   /// using async code in the main function.
@@ -25,12 +28,14 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp.router(
+      routerConfig: allRoutes,
+      debugShowCheckedModeBanner: false,
+      title: AppConfig.appName,
+      /// Sets the default locale for the application.
+      locale: const Locale('en', 'US'),
+      localizationsDelegates: AppLang.localizationsDelegates,
+      supportedLocales: AppLang.supportedLocales,
     );
   }
 }

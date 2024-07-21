@@ -5,20 +5,6 @@ abstract class Routes {
 
 }
 
-extension RemoveSlash on String {
-  String get removeSlash {
-    try {
-      if (startsWith("/")) {
-        return substring(1);
-      } else {
-        return this;
-      }
-    } catch (e) {
-      return this;
-    }
-  }
-}
-
 extension AddSlash on String {
   String get withSlash {
     try {

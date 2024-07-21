@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/app.dart';
 import '../../../di_container.dart';
 import '../../utils/utils.dart';
 
@@ -33,6 +35,12 @@ class DioInterceptor implements Interceptor {
     log("statusCode:=> ${response.statusCode}");
     log("body:=> hasData: ${response.data != null}");
     log("=======================================");
+
+    if (response.statusCode == 401 ||
+        response.data.toLowerCase().contains("unauthorized")) {
+      preferences.clear();
+      navigatorKey.currentContext!.goNamed(Routes.login);
+    }
     handler.next(response);
   }
 }
