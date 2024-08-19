@@ -136,6 +136,12 @@ abstract class AppLang {
   /// In en, this message translates to:
   /// **'City'**
   String get city;
+
+  /// No description provided for @pleaseTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again'**
+  String get pleaseTryAgain;
 }
 
 class _AppLangDelegate extends LocalizationsDelegate<AppLang> {

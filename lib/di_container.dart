@@ -3,73 +3,80 @@ import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'app/app.dart';
 import 'core/core.dart';
+import 'domain/domain.dart';
+import 'infrastructure/infrastructure.dart';
+import 'presentation/bloc/bloc.dart';
 
+/// Global instance of GetIt for dependency injection.
 GetIt getIt = GetIt.instance;
+
+/// Pre-fetches the SharedPreferences instance from GetIt for easy access.
 SharedPreferences preferences = getIt<SharedPreferences>();
 
 /// Initializes the dependency injection by registering various components.
 Future<void> initDependencyInjection() async {
-  await _registerSingletons();
-  _registerDataSources();
-  _registerRepositories();
-  _registerQueries();
-  _registerCommands();
-  _registerFactories();
+  await _registerSingletons(); // Registers singleton instances.
+  _registerDataSources(); // Registers data sources.
+  _registerRepositories(); // Registers repositories.
+  _registerContracts(); // Registers contracts.
+  _registerUsecases(); // Registers use cases.
+  _registerFactories(); // Registers factory instances.
 }
 
 /// Registers the repositories with GetIt.
-/// Uncomment and modify the code to register your repositories.
 void _registerRepositories() {
-  // getIt.registerSingleton<AuthRepo>(AuthRepoImpl(authDataSource: getIt()));
+  /// Registers the implementation of PokeRepo as a singleton.
+  getIt.registerSingleton<PokeRepo>(PokeRepoImpl(pokeDataSource: getIt()));
 }
 
 /// Registers the data sources with GetIt.
-/// Uncomment and modify the code to register your data sources.
 void _registerDataSources() {
-  // getIt.registerSingleton<GetMeDataSource>(
-  //     GetMeDataSourceImpl(dioClient: getIt()));
+  /// Registers the implementation of PokeDataSource as a singleton.
+  getIt.registerSingleton<PokeDataSource>(
+      PokeDataSourceImpl(baseDio: getIt(), graphService: getIt()));
 }
 
-/// Registers the commands with GetIt.
-/// Uncomment and modify the code to register your commands.
-void _registerCommands() {
-  // getIt.registerSingleton<DeleteAppointmentCommand>(
-  // DeleteAppointmentCommandImpl(appointmentRepo: getIt()));
+/// Registers the contracts with GetIt.
+void _registerContracts() {
+  /// Registers the RESTful API contract implementation as a singleton.
+  getIt.registerSingleton<PokeRestfulApiContract>(
+      PokeRestContractImpl(pokeRepo: getIt()));
+
+  /// Registers the GraphQL contract implementation as a singleton.
+  getIt.registerSingleton<PokeGraphContract>(
+      PokeGraphContractImpl(pokeRepo: getIt()));
 }
 
-/// Registers the queries with GetIt.
-/// Uncomment and modify the code to register your queries.
-void _registerQueries() {
-  // getIt.registerSingleton<LoginQuery>(LoginQueryImpl(authRepo: getIt()));
+/// Registers the use cases with GetIt.
+void _registerUsecases() {
+  /// Registers the PokeUsecase which uses both RESTful API and GraphQL contracts.
+  getIt.registerSingleton<PokeUsecase>(
+      PokeUsecase(pokeContract: getIt(), pokeGraphContract: getIt()));
 }
 
-/// Registers the factories with GetIt.
-/// Uncomment and modify the code to register your factories.
+/// Registers the factory instances with GetIt.
 void _registerFactories() {
-  // getIt.registerFactory<AuthBloc>(
-  //   () => AuthBloc(
-  //     registerQuery: getIt(),
-  //     loginQuery: getIt(),
-  //     changePasswordQuery: getIt(),
-  //   ),
-  // );
+  /// Registers PokeBloc as a factory, creating a new instance each time it is requested.
+  getIt.registerFactory<PokeBloc>(() => PokeBloc(pokeUsecase: getIt()));
 }
 
 /// Registers the singletons with GetIt.
 Future<void> _registerSingletons() async {
+  /// Initialize SharedPreferences and register it as a singleton.
   final SharedPreferences sharedPreferences =
       await SharedPreferences.getInstance();
 
   // Configuration options for Dio.
   BaseOptions options = BaseOptions(
-    baseUrl: EndPoints.baseUrl,
-    followRedirects: false,
+    baseUrl: EndPoints.baseUrl, // Base URL for API requests.
+    followRedirects: false, // Disables following redirects automatically.
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json', // Default content type for requests.
     },
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 10),
+    connectTimeout: const Duration(seconds: 10), // Connection timeout.
+    receiveTimeout: const Duration(seconds: 10), // Response timeout.
   );
 
   // Registering singletons.
@@ -77,21 +84,21 @@ Future<void> _registerSingletons() async {
   // Register SharedPreferences.
   getIt.registerSingleton<SharedPreferences>(sharedPreferences);
 
-  // Register HttpLink.
+  // Register HttpLink for GraphQL.
   getIt.registerSingleton<Link>(customGraphLink);
 
-  // Register GraphQlConfig.
+  // Register GraphQlConfig which holds the GraphQL configuration.
   getIt.registerSingleton<GraphQlConfig>(GraphQlConfig(link: getIt()));
 
-  // Register GraphService.
+  // Register GraphService which handles GraphQL operations.
   getIt.registerSingleton<GraphService>(GraphService(graphQLConfig: getIt()));
 
-  // Register Dio with custom configurations and interceptors.
+  // Register Dio instance with custom configurations and interceptors.
   getIt.registerSingleton<BaseDio>(
     DioClient(
-      options: options,
-      interceptors: [DioInterceptor()],
-      dio: Dio(),
+      options: options, // Pass the custom options defined above.
+      interceptors: [DioInterceptor()], // List of interceptors.
+      dio: Dio(), // Dio instance.
     ),
   );
 }

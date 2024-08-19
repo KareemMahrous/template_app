@@ -10,9 +10,9 @@ abstract class AppColors {
 
   static const blueColor = Color(0xff03758E);
 
-  static const primaryColor = Colors.greenAccent; //AppColors.greenColor;
+  static const primary = Colors.greenAccent; //AppColors.greenColor;
 
-  static const greenColor = Color(0xFF2156A3);
+  static const blue = Color(0xFF2156A3);
 
   static const redColor = Color(0xffFF3D00);
 

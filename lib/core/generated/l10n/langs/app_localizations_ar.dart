@@ -26,4 +26,7 @@ class AppLangAr extends AppLang {
 
   @override
   String get city => 'المدينة';
+
+  @override
+  String get pleaseTryAgain => 'يرجي المحاولة  مرة اخرى';
 }

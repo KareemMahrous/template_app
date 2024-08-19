@@ -51,8 +51,8 @@ class DefaultButton extends StatelessWidget {
   }
 }
 
-class OutlinedButton extends StatelessWidget {
-  const OutlinedButton(
+class OutlinedDefaultButton extends StatelessWidget {
+  const OutlinedDefaultButton(
       {super.key,
       required this.text,
       required this.onPressed,
@@ -70,8 +70,8 @@ class OutlinedButton extends StatelessWidget {
   final double? elevation;
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
           elevation: elevation,
           backgroundColor: buttonColor,
           shape: RoundedRectangleBorder(
@@ -118,14 +118,13 @@ class CustomButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(radius!))),
         onPressed: onPressed,
         child: widget,
-        
       ),
     );
   }
 }
 
-class TextButton extends StatelessWidget {
-  const TextButton(
+class TextDefaultButton extends StatelessWidget {
+  const TextDefaultButton(
       {super.key,
       required this.text,
       required this.onPressed,
@@ -133,7 +132,7 @@ class TextButton extends StatelessWidget {
       this.style});
   final String text;
   final VoidCallback onPressed;
-  final Color? textColor;
+  final Color textColor;
   final TextStyle? style;
   @override
   Widget build(BuildContext context) {

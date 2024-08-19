@@ -26,4 +26,7 @@ class AppLangEn extends AppLang {
 
   @override
   String get city => 'City';
+
+  @override
+  String get pleaseTryAgain => 'Please try again';
 }

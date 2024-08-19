@@ -17,7 +17,8 @@ class CustomBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    log('onChange -- ${bloc.runtimeType}, $change');
+    log('onChange -- ${bloc.runtimeType}');
+    log('Current State:=> ${change.currentState.toString().length > 100 ? '${change.currentState.toString().substring(0, 100)}...' : change.currentState.toString()} \nNext State:=> ${change.nextState.toString().length > 100 ? '${change.nextState.toString().substring(0, 100)}...' : change.nextState.toString()}');
   }
 
   /// Called when an error is thrown in any BLoC.

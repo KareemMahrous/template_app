@@ -1,15 +1,21 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../app/app.dart';
 import '../../../di_container.dart';
 import '../../utils/utils.dart';
 
 class DioInterceptor implements Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
+    log("=======================================");
+    log("Error");
+    log("path:=> ${err.requestOptions.path}");
+    log("error:=> ${err.error}");
+    log("message:=> ${err.message}");
+    log("message:=> ${err.response?.data}");
+    log("=======================================");
+
     handler.next(err);
   }
 
@@ -22,6 +28,7 @@ class DioInterceptor implements Interceptor {
     log("url:=> ${options.path}");
     log("content:=> ${options.contentType}");
     log("headers:=> hasToken:${token != null}");
+    log("queryParameters:=> ${options.queryParameters}");
     log("body:=> ${options.data != null ? options.data! : "Data is null"}");
     log("=======================================");
     handler.next(options);
@@ -36,11 +43,11 @@ class DioInterceptor implements Interceptor {
     log("body:=> hasData: ${response.data != null}");
     log("=======================================");
 
-    if (response.statusCode == 401 ||
-        response.data.toLowerCase().contains("unauthorized")) {
-      preferences.clear();
-      navigatorKey.currentContext!.goNamed(Routes.login);
-    }
+    // if (response.statusCode == 401 ||
+    //     response.data.contains("unauthorized")) {
+    //   preferences.clear();
+    //   navigatorKey.currentContext!.goNamed(Routes.login);
+    // }
     handler.next(response);
   }
 }

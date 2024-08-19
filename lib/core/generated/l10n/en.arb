@@ -6,5 +6,6 @@
     "register": "Register",
     "name": "Name",
     "email": "Email",
-    "city": "City"
+    "city": "City",
+    "pleaseTryAgain": "Please try again"
 }

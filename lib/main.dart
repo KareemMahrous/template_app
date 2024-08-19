@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template/app/routing/routing.dart';
-import 'package:template/core/constants/app_config.dart';
+import 'app/routing/routing.dart';
 
 import 'bloc_observer.dart';
 import 'core/core.dart';
@@ -32,6 +31,7 @@ class MainApp extends StatelessWidget {
       routerConfig: allRoutes,
       debugShowCheckedModeBanner: false,
       title: AppConfig.appName,
+
       /// Sets the default locale for the application.
       locale: const Locale('en', 'US'),
       localizationsDelegates: AppLang.localizationsDelegates,
