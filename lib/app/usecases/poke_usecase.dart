@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:template/domain/domain.dart';
+import '../../domain/domain.dart';
 
 import '../../core/core.dart';
 import '../app.dart';

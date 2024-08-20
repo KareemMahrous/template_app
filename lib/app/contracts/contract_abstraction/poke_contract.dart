@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../../../domain/domain.dart';
+
 import '../../../core/core.dart';
+import '../../../domain/domain.dart';
 import '../../app.dart';
 
 /// Contract for the RESTful API operations related to Pokémon data.

@@ -1,5 +1,4 @@
-String getPokesQuery =
-    r'''query Pokemon_v2_pokemonspecies ($limit :Int) {
+String getPokesQuery = r'''query Pokemon_v2_pokemonspecies ($limit :Int) {
     pokemon_v2_pokemonspecies(limit: $limit) {
         base_happiness
         capture_rate
