@@ -7,5 +7,8 @@
     "name": "Name",
     "email": "Email",
     "city": "City",
-    "pleaseTryAgain": "Please try again"
+    "pleaseTryAgain": "Please try again",
+    "password": "Password",
+    "lang": "EN",
+    "fieldRequired": "This field is required"
 }

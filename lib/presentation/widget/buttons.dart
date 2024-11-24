@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
 class DefaultButton extends StatelessWidget {
-  const DefaultButton(
-      {super.key,
-      required this.onPressed,
-      required this.text,
-      this.textColor = Colors.black,
-      this.radius = 0,
-      this.buttonColor,
-      this.width,
-      this.height,
-      this.elevation = 0,
-      this.style,
-      this.shadowColor});
+  const DefaultButton({
+    super.key,
+    required this.onPressed,
+    required this.text,
+    this.textColor = Colors.black,
+    this.radius = 0,
+    this.buttonColor,
+    this.width,
+    this.height,
+    this.elevation = 0,
+    this.style,
+    this.shadowColor,
+  });
   final Color? shadowColor;
   final String text;
   final VoidCallback? onPressed;

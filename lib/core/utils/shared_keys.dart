@@ -28,4 +28,5 @@ abstract class SharedKeys {
   static const productSortString = 'productSortString';
   static const isFirstTimeOpeningApp = 'isFirstTimeOpeningApp';
   static const isOnlinePaymentMethod = 'isOnlinePaymentMethod';
+  static const locale = 'locale';
 }

@@ -29,4 +29,13 @@ class AppLangAr extends AppLang {
 
   @override
   String get pleaseTryAgain => 'يرجي المحاولة  مرة اخرى';
+
+  @override
+  String get password => 'كلمة المرور';
+
+  @override
+  String get lang => 'ع';
+
+  @override
+  String get fieldRequired => 'هذا الحقل مطلوب';
 }

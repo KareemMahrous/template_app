@@ -29,4 +29,13 @@ class AppLangEn extends AppLang {
 
   @override
   String get pleaseTryAgain => 'Please try again';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get lang => 'EN';
+
+  @override
+  String get fieldRequired => 'This field is required';
 }
