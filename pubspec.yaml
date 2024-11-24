@@ -11,38 +11,50 @@ dependencies:
     sdk: flutter
 
   #State management
-  bloc: ^8.1.4
-  flutter_bloc: ^8.1.6
+  bloc:
+  flutter_bloc:
 
   #Network
-  dio: ^5.4.3+1
-  graphql_flutter: ^5.1.2
+  dio:
+  graphql_flutter:
+  http:
 
   #Dependency injection
-  get_it: ^7.7.0
+  get_it:
 
   #Local storage
-  shared_preferences: ^2.2.3
+  shared_preferences:
+  flutter_secure_storage:
 
   #Routing
-  go_router: ^14.2.0
-  
+  go_router:
+
   #Localization
   flutter_localizations:
     sdk: flutter
-  
+
   #UI
-  intl: ^0.19.0
+  intl:
+  cached_network_image:
 
   #Utils
-  dartz: ^0.10.1
-  equatable: ^2.0.5
-  http: ^0.13.6
-  
+  dartz:
+  equatable:
+  json_annotation:
+
+  #External
+  url_launcher:
+
+  #Testing
+  mockito:
+  bloc_test:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
+  json_serializable:
+  build_runner:
 
 flutter:
   uses-material-design: true
