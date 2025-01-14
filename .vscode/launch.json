@@ -1,0 +1,44 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Development",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_development.dart",
+      "flutterMode": "debug",
+      "args": [
+        "--flavor",
+        "Development",
+        "--target",
+        "lib/main_development.dart"
+      ]
+    },
+    {
+      "name": "Staging",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_staging.dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "Staging", "--target", "lib/main_staging.dart"]
+    },
+    {
+      "name": "Staging (Profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_staging.dart",
+      "flutterMode": "profile",
+      "args": ["--flavor", "Staging", "--target", "lib/main_staging.dart"]
+    },
+    {
+      "name": "Production",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_production.dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "Production", "--target", "lib/main_production.dart"]
+    }
+
+  ],
+  "compounds": []
+}
