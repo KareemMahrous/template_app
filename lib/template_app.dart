@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:template/di_container.dart';
 
 import 'app/routing/routing.dart';
 import 'core/core.dart';
@@ -11,8 +12,18 @@ class TemplateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ThemeBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ThemeBloc(),
+        ),
+        BlocProvider(
+          create: (context) => LocalizationBloc()
+            ..add(UpdateLocalization(
+                locale: preferences.getString(SharedKeys.locale) ??
+                    Localizations.localeOf(context).languageCode)),
+        ),
+      ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           return MaterialApp.router(
@@ -30,7 +41,9 @@ class TemplateApp extends StatelessWidget {
             title: AppConfig.appName,
 
             /// Sets the default locale for the application.
-            locale: const Locale('en', 'US'),
+            locale: (context.read<LocalizationBloc>().state
+                    as LocalizationSelectedState)
+                .locale,
             localizationsDelegates: AppLang.localizationsDelegates,
             supportedLocales: AppLang.supportedLocales,
           );

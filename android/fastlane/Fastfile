@@ -1,0 +1,20 @@
+default_platform(:android)
+
+platform :android do
+  desc "Firebase App Distribution"
+  lane :distribute do
+      sh "flutter clean"
+      # change the flavor of the app accordingly
+      sh "flutter build apk --release --flavor Development -t lib/main_development.dart --obfuscate --split-debug-info=build/app/outputs/symbol"
+      firebase_app_distribution(
+        app: "APP_ID",
+        testers: "email",
+        release_notes: "FastLane Release note",
+        # ensure that the client token in added to github secrets or azure key vault
+        firebase_cli_token: ENV["FB_CLIENT_TOKEN"],
+        android_artifact_type: "APK",
+        # change the name of the file accordingly
+        android_artifact_path: "../build/app/outputs/flutter-apk/app-development-release.apk"
+      )
+  end
+end

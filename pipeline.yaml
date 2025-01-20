@@ -1,0 +1,255 @@
+trigger:
+  - production
+
+stages:
+  - stage: AndroidStage
+    pool:
+      vmImage: "ubuntu-latest"
+    dependsOn: []
+    displayName: Android
+    jobs:
+      - job: AndroidJob
+        displayName: Android
+        steps:
+          # replace "key.properties" with your secure file name
+          - task: DownloadSecureFile@1
+            name: keyprop
+            displayName: Download key properties file
+            inputs:
+              secureFile: "key.properties"
+
+          # replace "upload-keystore.jks" with your secure file name
+          - task: DownloadSecureFile@1
+            name: key
+            displayName: Download signing key
+            inputs:
+              secureFile: "upload-keystore.jks"
+
+          # adjust paths and file names here
+          - task: Bash@3
+            displayName: Copy config files
+            inputs:
+              targetType: "inline"
+              script: |
+                cp $(keyprop.secureFilePath) $(Build.SourcesDirectory)/android/key.properties
+                cp $(key.secureFilePath) $(Build.SourcesDirectory)/android/app/upload-keystore.jks
+
+                echo "key.properties copied to $(Build.SourcesDirectory)/android/key.properties"
+                echo "key.jks copied to $(Build.SourcesDirectory)/android/app/upload-keystore.jks"
+
+          - task: UseRubyVersion@0
+            inputs:
+              versionSpec: ">= 3.2.2"
+
+          - task: JavaToolInstaller@0
+            displayName: "Install Java 17"
+            inputs:
+              versionSpec: "17"
+              jdkArchitectureOption: x64
+              jdkSourceOption: PreInstalled
+
+          - task: FlutterInstall@0
+            displayName: "Install Flutter SDK"
+            inputs:
+              mode: "auto"
+              channel: "stable"
+              version: "latest"
+              # customVersion: "3.27.0"
+
+          - task: FlutterCommand@0
+            displayName: "Run Flutter diagnostics"
+            inputs:
+              projectDirectory: "."
+              arguments: "doctor -v"
+
+          - task: FlutterTest@0
+            displayName: "Run unit tests"
+            inputs:
+              generateCodeCoverageReport: true
+              projectDirectory: "$(Build.SourcesDirectory)"
+
+          - task: CmdLine@2
+            env:
+              FB_CLIENT_TOKEN: $(FB_CLIENT_TOKEN)
+            inputs:
+              script: |
+                # Install Ruby and Fastlane
+                echo "Installing Ruby and Fastlane..."
+                sudo apt-get update
+                sudo apt-get install ruby-full -y
+                gem install fastlane -NV
+
+                # Debug installation
+                echo "Fastlane installed at: $(which fastlane)"
+                fastlane --version
+
+                # Navigate to the Android directory
+                echo "Navigating to Android directory..."
+                cd android
+
+                # Install Bundler dependencies (if Gemfile exists)
+                if [ -f Gemfile ]; then
+                  echo "Installing dependencies with Bundler..."
+                  gem install bundler
+                  bundle install
+                fi
+
+                # Run Fastlane lane for Firebase distribution
+                echo "Running Fastlane lane: distribute"
+                bundle exec fastlane distribute
+              workingDirectory: "android"
+
+          # - task: FlutterBuild@0
+          #   displayName: "Build application"
+          #   inputs:
+          #     target: "apk" # "aab" for play store
+          #     projectDirectory: "$(Build.SourcesDirectory)"
+
+          # - task: CopyFiles@2
+          #   displayName: "Copy app to staging directory"
+          #   inputs:
+          #     sourceFolder: "$(Agent.BuildDirectory)"
+          #     contents: "**/bundle/**"
+          #     targetFolder: "$(Build.StagingDirectory)"
+          #     flattenFolders: true
+
+          # - task: PublishBuildArtifacts@1
+          #   displayName: "Publish AAB file"
+          #   inputs:
+          #     PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+          #     ArtifactName: "AAB"
+          #     publishLocation: "Container"
+
+          # - task: GooglePlayRelease@4
+          #   inputs:
+          #     serviceConnection: 'google_console_connection'
+          #     #TODO: change app id
+          #     applicationId: "com.moj.legal.portal"
+          #     action: 'SingleBundle'
+          #     bundleFile: '$(Pipeline.Workspace)/dropAPK/app.release.signed.aab'
+          #     track: 'internal'
+          #     releaseName: 'app-$(Build.BuildId)'
+
+          # - task: AppCenterDistribute@3
+          #   inputs:
+          #   # TODO: add Server Endpoint
+          #     serverEndpoint: 'ServerEndpoint'
+          #   # add app slug Company/Demo-App
+          #     appSlug: 'Ministry of Justice Kingdom of Saudi Arabia/Legal Portal'
+          #     appFile: '$(build.artifactStagingDirectory)/./build/app/outputs/flutter-apk/app-release.apk'
+          #     symbolsOption: 'Android'
+          #     # TODO: release Note
+          #     releaseNotesInput: ''
+          #     destinationType: 'groups'
+
+  - stage: iOSStage
+    pool:
+      vmImage: "macos-13"
+    dependsOn: []
+    displayName: iOS
+    jobs:
+      - job: iOSJob
+        displayName: iOS
+        steps:
+          - task: InstallAppleCertificate@2
+            displayName: Install certificate
+            inputs:
+              certSecureFile: "ios_dist.p12"
+              certPwd: "000000"
+
+          - task: InstallAppleProvisioningProfile@1
+            displayName: Install provisioning file
+            inputs:
+              provisioningProfileLocation: "secureFiles"
+              provProfileSecureFile: "Legal_Portal.mobileprovision"
+
+          - task: CmdLine@2
+            inputs:
+              script: |
+                echo "Removing Podfile..."
+                rm ios/Podfile
+
+          - task: FlutterInstall@0
+            displayName: "Install Flutter SDK"
+            inputs:
+              mode: "auto"
+              channel: "stable"
+              version: "latest"
+              # customVersion: "3.27.0"
+
+          - task: FlutterCommand@0
+            displayName: "Run Flutter diagnostics"
+            inputs:
+              projectDirectory: "."
+              arguments: "doctor -v"
+
+          - task: FlutterTest@0
+            displayName: "Run unit tests"
+            inputs:
+              generateCodeCoverageReport: true
+              projectDirectory: "$(Build.SourcesDirectory)"
+
+          # - task: CmdLine@2
+          #   inputs:
+          #     script: |
+          #       echo "Removing Podfile..."
+          #       rm ${Build.SourcesDirectory}/ios/Podfile
+
+          - task: FlutterBuild@0
+            displayName: "Build application"
+            inputs:
+              target: ipa
+              projectDirectory: "$(Build.SourcesDirectory)"
+              extraArgs: --no-codesign --flavor Development -t lib/main_development.dart
+              entryPoint: "lib/main_development.dart"
+              buildNumber: "$(Build.BuildNumber)"
+
+          - task: Xcode@5
+            displayName: "[Xcode] Archive and sign"
+            inputs:
+              workingDirectory: "$(Build.SourcesDirectory)"
+              xcWorkspacePath: "$(Build.SourcesDirectory)/ios/Runner.xcworkspace"
+              actions: "archive"
+              sdk: "iphoneos"
+              scheme: "Production"
+              configuration: "Release"
+              packageApp: true
+              signingOption: "manual"
+              signingIdentity: "$(APPLE_CERTIFICATE_SIGNING_IDENTITY)"
+              provisioningProfileUuid: "$(APPLE_PROV_PROFILE_UUID)"
+              useXcpretty: false
+              teamId: "7KVEP3LQ6X"
+              exportTeamId: "7KVEP3LQ6X"
+              exportMethod: "app-store"
+              args: "-verbose"
+              exportOptions: "plist"
+              exportOptionsPlist: "$(Build.SourcesDirectory)/ios/exportOptions.plist"
+              archivePath: "ios/archive/Runner.xcarchive"
+              exportPath: "output/iphoneos/Release"
+
+          - task: CopyFiles@2
+            displayName: "Copy app to staging directory"
+            inputs:
+              contents: "output/iphoneos/Release/**"
+              targetFolder: "$(Build.StagingDirectory)"
+              cleanTargetFolder: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish IPA file"
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "IPA"
+
+          # - task: AppStoreRelease@1
+          #   displayName: "Publish to TestFlight"
+          #   inputs:
+          #     serviceEndpoint: "APIKEY" #Needs permission
+          #     releaseTrack: "TestFlight"
+          #     appIdentifier: "com.moj.legal.portal"
+          #     appType: "iOS"
+          #     # releaseNotes: "New Release"
+          #     shouldSkipWaitingForProcessing: true
+          #     shouldSkipSubmission: true
+          #     appSpecificId: "6739198404"
+          #     teamId: "7KVEP3LQ6X"
+          #     teamName: "Ministry of Justice Kingdom of Saudi Arabia"
