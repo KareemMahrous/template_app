@@ -107,7 +107,7 @@ class AppTheme {
       backgroundColor: AppColors.lightPrimaryColor,
     ),
     iconTheme: const IconThemeData(color: AppColors.lightOnBackgroundColor),
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: AppColors.lightSurfaceColor,
       elevation: 4.0,
     ),
@@ -160,7 +160,7 @@ class AppTheme {
       backgroundColor: AppColors.darkPrimaryColor,
     ),
     iconTheme: const IconThemeData(color: AppColors.darkOnBackgroundColor),
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: AppColors.darkSurfaceColor,
       elevation: 4.0,
     ),
