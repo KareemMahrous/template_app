@@ -1,29 +1,62 @@
 import 'package:dio/dio.dart';
 
-import '../errors/failure.dart';
-
+import '../../core.dart';
 
 class DioExceptionHandler {
   static Failure handle(DioException exception) {
-    final String message = exception.response?.statusMessage ??
-        "Something went wrong, please try again later";
+    final response = exception.response;
+
+    // Default fallback message
+    String message = "Something went wrong, please try again later";
+
+    // Try to extract a message from response.data
+    if (response != null) {
+      final data = response.data;
+
+      if (data is Map<String, dynamic> && data.containsKey('message')) {
+        message = data['message'] ?? message;
+      } else if (data is String) {
+        message = data;
+      } else if (response.statusMessage != null) {
+        message = response.statusMessage!;
+      }
+
+      // Handle HTTP status codes
+      switch (response.statusCode) {
+        case 400:
+          return BadRequestFailure(message);
+        case 401:
+        case 403:
+          return UnAuthorizedFailure(message);
+        case 404:
+          return NotFoundFailure(message);
+        case 422:
+          return InvalidInputFailure(message);
+        case 500:
+        case 502:
+        case 503:
+        case 504:
+          return ServerFailure("Server error: $message");
+        default:
+          return ServerFailure("Unexpected error: $message");
+      }
+    }
+
+    // Handle other Dio exceptions
     switch (exception.type) {
       case DioExceptionType.connectionTimeout:
-        throw ServerFailure(message);
       case DioExceptionType.sendTimeout:
-        throw ServerFailure(message);
       case DioExceptionType.receiveTimeout:
-        throw ServerFailure(message);
       case DioExceptionType.badCertificate:
-        throw ServerFailure(message);
       case DioExceptionType.cancel:
-        throw ServerFailure(message);
-      case DioExceptionType.badResponse:
-        throw ServerFailure(message);
       case DioExceptionType.connectionError:
-        throw ServerFailure(message);
+        return NetworkFailure("Connection error: $message");
+
+      case DioExceptionType.badResponse:
+        return ServerFailure("Server error: $message");
+
       default:
-        throw ServerFailure(message);
+        return ServerFailure(message);
     }
   }
 }

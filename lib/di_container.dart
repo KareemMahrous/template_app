@@ -35,25 +35,29 @@ void _registerRepositories() {
 void _registerDataSources() {
   /// Registers the implementation of PokeDataSource as a singleton.
   getIt.registerSingleton<PokeDataSource>(
-      PokeDataSourceImpl(baseDio: getIt(), graphService: getIt()));
+    PokeDataSourceImpl(baseDio: getIt(), graphService: getIt()),
+  );
 }
 
 /// Registers the contracts with GetIt.
 void _registerContracts() {
   /// Registers the RESTful API contract implementation as a singleton.
   getIt.registerSingleton<PokeRestfulApiContract>(
-      PokeRestContractImpl(pokeRepo: getIt()));
+    PokeRestContractImpl(pokeRepo: getIt()),
+  );
 
   /// Registers the GraphQL contract implementation as a singleton.
   getIt.registerSingleton<PokeGraphContract>(
-      PokeGraphContractImpl(pokeRepo: getIt()));
+    PokeGraphContractImpl(pokeRepo: getIt()),
+  );
 }
 
 /// Registers the use cases with GetIt.
 void _registerUsecases() {
   /// Registers the PokeUsecase which uses both RESTful API and GraphQL contracts.
   getIt.registerSingleton<PokeUsecase>(
-      PokeUsecase(pokeContract: getIt(), pokeGraphContract: getIt()));
+    PokeUsecase(pokeContract: getIt(), pokeGraphContract: getIt()),
+  );
 }
 
 /// Registers the factory instances with GetIt.
